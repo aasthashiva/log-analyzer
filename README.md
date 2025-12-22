@@ -30,11 +30,13 @@ All analysis is performed locally using Python’s standard library.
 
 ## Project structure
 
+```text
 log-analyzer/
-├── analyzer.py      # log parsing and orchestration
-├── stats.py         # statistical computations
-├── sample.log       # example log file
+├── analyzer.py
+├── stats.py
+├── sample.log
 └── README.md
+```
 
 ## Requirements
 
