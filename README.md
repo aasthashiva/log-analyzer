@@ -1,8 +1,15 @@
-# log-analyzer
+# system-log-analyzer
 
 A lightweight Python utility for parsing structured system logs, aggregating latency metrics, and identifying anomalously slow requests using deterministic statistical methods.
-
 This project focuses on **clarity, correctness, and explainability**, mirroring how foundational observability tools are built in real systems.
+
+---
+
+## Problem Statement
+
+Raw system logs contain useful performance signals, but extracting consistent metrics from large log files is tedious and error-prone.
+
+This tool demonstrates how to stream logs, aggregate latency and error data, and surface unusually slow requests without external dependencies or opaque heuristics.
 
 ---
 
@@ -31,55 +38,109 @@ All computation is performed locally using Python’s standard library.
 
 ## Design Philosophy
 
-This project intentionally avoids machine learning and external dependencies.
+This project avoids machine learning and external dependencies by design.
 
-The objective is to demonstrate how **raw operational data** can be transformed into **actionable metrics** using straightforward parsing and statistics—techniques that remain foundational even in large-scale systems.
+It focuses on demonstrating how raw operational data can be transformed into actionable metrics using simple parsing and deterministic statistics.
 
 ---
 
 ## Processing Flow
 
 ```text
-┌───────────────┐
-│  Log File     │
-│ (generated.log)│
-└───────┬───────┘
-        │
-        ▼
-┌────────────────────┐
-│ Read file line by  │
-│ line               │
-└───────┬────────────┘
-        │
-        ▼
-┌────────────────────┐
-│ Tokenize log entry │
-│ into parts         │
-└───────┬────────────┘
-        │
-        ▼
-┌──────────────────────────┐
-│ Extract fields           │
-│ - latency                │
-│ - INFO / WARN / ERROR    │
-└───────┬──────────────────┘
-        │
-        ▼
-┌──────────────────────────┐
-│ Aggregate metrics        │
-│ - latency list           │
-│ - event counters         │
-└───────┬──────────────────┘
-        │
-        ▼
-┌──────────────────────────┐
-│ Statistical analysis     │
-│ - mean & median latency  │
-│ - anomaly threshold      │
-│ - slowest N requests     │
-└───────┬──────────────────┘
-        │
-        ▼
-┌──────────────────────────┐
-│ Console summary output   │
-└──────────────────────────┘
+
+┌────────────────────────────┐
+│ Log Generation             │
+│ (generate_log.py)          │
+│                            │
+│ - Uses random module       │
+│ - Generates ~100k entries  │
+│ - Writes to generated.log  │
+└───────────────┬────────────┘
+                │
+                ▼
+┌────────────────────────────┐
+│ Log File                   │
+│ (generated.log)            │
+└───────────────┬────────────┘
+                │
+                ▼
+┌────────────────────────────┐
+│ Read file line by line     │
+│ (streaming, not in-memory) │
+└───────────────┬────────────┘
+                │
+                ▼
+┌────────────────────────────┐
+│ Tokenize log entry         │
+│ into parts                 │
+└───────────────┬────────────┘
+                │
+                ▼
+┌────────────────────────────┐
+│ Extract fields             │
+│ - latency                  │
+│ - INFO / WARN / ERROR      │
+└───────────────┬────────────┘
+                │
+                ▼
+┌────────────────────────────┐
+│ Aggregate metrics          │
+│ - latency list             │
+│ - error-specific latency  │
+│ - event counters           │
+└───────────────┬────────────┘
+                │
+                ▼
+┌────────────────────────────┐
+│ Statistical analysis       │
+│ - mean latency             │
+│ - median latency           │
+│ - anomaly threshold        │
+│ - slowest N requests       │
+└───────────────┬────────────┘
+                │
+                ▼
+┌────────────────────────────┐
+│ Console summary output     │
+└────────────────────────────┘
+
+```
+
+# Project Structure
+log-analyzer/
+├── analyze_logs.py   # Streaming log parsing and metric aggregation
+├── stats.py          # Statistical utilities and anomaly detection
+├── generate_log.py   # Synthetic log generation for testing
+├── generated.log     # Sample log file
+└── README.md
+
+---
+
+# Requirements
+
+Python 3.x
+No third-party libraries
+
+---
+
+# Output Summary
+
+The analyzer reports:
+
+- Total requests processed
+- Count of INFO, WARN, and ERROR events
+- Average and median latency (ms)
+- Anomaly threshold (mean + kσ)
+- Number of anomalous requests
+- Top N slowest latencies
+- Overall error rate
+- All values are derived directly from the input log file.
+
+---
+
+## Notes
+
+- Malformed log entries or entries missing a latency field are skipped rather than terminating processing.
+- Anomaly detection is purely statistical and deterministic
+- Results are intended for inspection, not automated decision-making
+- The project favors transparency over sophistication
