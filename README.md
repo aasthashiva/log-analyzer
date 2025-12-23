@@ -106,14 +106,14 @@ It focuses on demonstrating how raw operational data can be transformed into act
 
 ```
 
-# Project Structure
-log-analyzer/
-├── analyze_logs.py   # Streaming log parsing and metric aggregation
-├── stats.py          # Statistical utilities and anomaly detection
-├── generate_log.py   # Synthetic log generation for testing
-├── generated.log     # Sample log file
-└── README.md
+## Project Structure
 
+log-analyzer/
+├── analyze_logs.py # Streaming log parsing and metric aggregation
+├── stats.py # Statistical utilities and anomaly detection
+├── generate_log.py # Synthetic log generation for testing
+├── generated.log # Sample log file
+└── README.md
 ---
 
 # Requirements
