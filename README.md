@@ -1,52 +1,66 @@
-# log-analyzer
+# SYSTEM-LOG-ANALYZER
 
-A Python-based utility for parsing system log files, aggregating latency metrics, and identifying anomalously slow events using simple statistical thresholds.
+A Python program that reads system log files and summarizes latency behavior and event types.
 
-## What it does
+## Overview
 
-This tool reads structured system logs and produces a concise summary of system behavior by:
+System logs contain detailed records of what a system did over time.  
+Reading them line by line is inefficient, especially when the file is large.
 
-- Extracting latency values from log entries  
-- Counting INFO, WARN, and ERROR events  
-- Computing average latency and anomaly thresholds  
-- Flagging unusually slow requests  
-- Reporting the top N slowest latencies  
+This project extracts a small set of useful summaries from raw log data in order to understand overall system behavior.
 
-The goal is to summarize what is happening in the system, not to diagnose root causes or predict failures.
+## What the program does
 
-## Why this exists
+- Reads log entries from a text file  
+- Identifies INFO, WARN, and ERROR events  
+- Extracts latency values from each entry  
+- Aggregates latency data across all requests  
+- Computes average latency and a statistical threshold  
+- Flags unusually slow requests  
+- Reports the slowest observed latencies  
 
-In real systems, logs are the first source of truth.  
-This project demonstrates how raw log data can be transformed into meaningful performance metrics using basic parsing and statistics, without machine learning or complex infrastructure.
+The program summarizes behavior. It does not attempt to explain causes.
 
-## How it works
+## Log format
 
-- Logs are read line by line from a text file  
-- Each entry is parsed into structured fields  
-- Latency metrics are aggregated  
-- Anomalies are detected using a mean + 3σ statistical threshold  
-
-All analysis is performed locally using Python’s standard library.
-
-## Project structure
-
+Each log entry must follow this format:
 ```text
+YYYY-MM-DD HH:MM:SS <LEVEL> latency=<value>
+Example:
+2024-12-21 10:00:31 ERROR latency=980
+
+How it works
+
+The log file is read line by line
+
+Each line is split into components
+
+Event type and latency are extracted
+
+Latency values are collected for analysis
+
+Anomalies are detected using a mean + 3σ threshold
+
+All computation is done locally using the Python standard library.
+
+Project structure
 log-analyzer/
-├── analyzer.py
-├── stats.py
-├── sample.log
+├── analyzer.py   # log parsing and aggregation logic
+├── stats.py      # statistical analysis helpers
+├── sample.log    # example input log file
 └── README.md
-```
 
-## Requirements
+Requirements
 
-- Python 3.x  
-- No external dependencies
+Python 3.x
 
-## Usage
+No external libraries
 
-```bash
+Usage
+
+Run the analyzer from the project directory:
+
 python analyzer.py
 
-Notes
-This project intentionally avoids machine learning to emphasize clarity, correctness, and explainability.
+
+The program reads the log file and prints a summary to standard output.
