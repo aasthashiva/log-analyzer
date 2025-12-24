@@ -1,7 +1,7 @@
 # system-log-analyzer
 
 A lightweight Python utility for parsing structured system logs, aggregating latency metrics, and identifying anomalously slow requests using deterministic statistical methods.
-This project focuses on **clarity, correctness, and explainability**, mirroring how foundational observability tools are built in real systems.
+This project focuses on how foundational observability tools are built in real systems.
 
 ---
 
@@ -17,8 +17,6 @@ This tool demonstrates how to stream logs, aggregate latency and error data, and
 
 System logs are often the first signal of performance degradation.  
 This tool processes raw log files to extract latency data, classify event types, and surface unusually slow requests through simple statistical thresholds.
-
-It does **not** attempt root-cause analysis, prediction, or automated remediation.
 
 ---
 
